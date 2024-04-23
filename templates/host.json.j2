@@ -26,5 +26,6 @@
 
   "itsm": {{ itsm | replace("'", '"') }},
   "time_zone": "{{ host.site.time_zone }}",
+  {% block role %}{% endblock %}
 
 }
