@@ -1,0 +1,30 @@
+
+{%- if device is defined -%}
+
+  {%- set host = device -%}
+
+{%- else -%}
+
+  {%- set host = virtualmachine -%}
+
+{%- endif -%}
+
+{%- set itsm = {
+      "dcim": {
+        "id": host.id | int
+      },
+      "itam": {
+        "id": host.cf.itil_item_id | int,
+        "entity": host.cf.itil_entity | int ,
+        "asset_type": host.cf.itil_item_type
+      }
+    }
+
+  -%}
+
+{
+
+  "itsm": {{ itsm | replace("'", '"') }},
+  "time_zone": "{{ host.site.time_zone }}",
+
+}
