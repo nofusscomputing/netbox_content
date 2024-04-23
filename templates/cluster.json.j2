@@ -3,8 +3,64 @@
 
 {%- block cluster %}
 
-  
+
   {% if host.cluster is defined -%}
+
+    {%- if host.cluster.type | lower == 'kubernetes' -%}
+
+      {% set kube_ns = namespace(items=[]) -%}
+
+
+      {%- if
+        nfc_role_kubernetes_prime is defined
+          and
+        nfc_role_kubernetes_prime is not none
+      -%}
+
+        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_prime": nfc_role_kubernetes_prime} ] -%}
+
+      {%- endif -%}
+
+
+      {%- if
+        nfc_role_kubernetes_master is defined
+          and
+        nfc_role_kubernetes_master is not none
+      -%}
+
+        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_master": nfc_role_kubernetes_master} ] -%}
+
+      {%- endif -%}
+
+
+      {%- if
+        nfc_role_kubernetes_worker is defined
+          and
+        nfc_role_kubernetes_worker is not none
+      -%}
+
+        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_worker": nfc_role_kubernetes_worker} ] -%}
+
+      {%- endif -%}
+
+      {# "nfc_role_kubernetes_cluster_domain": "{{ host.cluster.name | lower }}.kube.", #}
+      {% for val in kube_ns.items %}{% for key, value in val.items() -%}
+      "{{ key }}": {{ value }},
+      {% endfor %}{% endfor %}
+
+      {% for key in host.cluster.cf %}{% if host.cluster.cf[key] != None -%}
+      {% if
+        host.cluster.cf[key] is not integer
+          and
+        host.cluster.cf[key] is not boolean
+      -%}
+      "{{ key }}": "{{ host.cluster.cf[key] }}",
+      {%- else -%}
+      "{{ key }}": {{ host.cluster.cf[key] }},
+      {%- endif %}
+      {% endif %}{% endfor %}
+
+    {%- endif -%}
 
   {%- endif %}
 
