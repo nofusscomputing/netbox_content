@@ -23,6 +23,14 @@
   -%}
 
 {
+  "interfaces": [
+    {% for interface in host.interfaces.all() -%}
+    {
+      "name": "{{ interface.name }}",
+      "mac_address": "{{ interface.mac_address }}",
+    },
+    {%- endfor %}
+  ],
 
   "itsm": {{ itsm | replace("'", '"') }},
   "time_zone": "{{ host.site.time_zone }}",
