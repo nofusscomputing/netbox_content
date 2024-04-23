@@ -7,6 +7,9 @@
   {% if host.cluster is defined -%}
 
     {%- if host.cluster.type | lower == 'kubernetes' -%}
+    {#
+      Configuration for Ansible Role nofusscomputing.kubernetes.nfc_kubernetes
+    #}
 
       {% set kube_ns = namespace(items=[]) -%}
 
