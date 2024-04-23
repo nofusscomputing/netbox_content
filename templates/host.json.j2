@@ -27,7 +27,20 @@
     {% for interface in host.interfaces.all() -%}
     {
       "name": "{{ interface.name }}",
+      "label": "
+        {%- if interface.cf.vm_interface_label is defined -%}
+          {{ interface.cf.vm_interface_label }}
+        {%- else -%}
+          {{ interface.label }}
+        {%- endif -%}",
+      "enabled": {{ interface.enabled }},
       "mac_address": "{{ interface.mac_address }}",
+      {% if interface.status | lower == 'dhcp' -%}{# Should be IP Address #}
+      "type": "dhcp",
+      {%- endif %}
+      "ip": "{{ interface['ip'] }}", 
+      "mask": "{{ interface.mask }}",
+      "bridge": "{{ interface.bridge }}"
     },
     {%- endfor %}
   ],
