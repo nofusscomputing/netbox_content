@@ -1,0 +1,52 @@
+
+{%- if device is defined -%}
+
+  {%- set host = device -%}
+
+{%- else -%}
+
+  {%- set host = virtualmachine -%}
+
+{%- endif -%}
+
+{%- set itsm = {
+      "dcim": {
+        "id": host.id | int
+      },
+      "itam": {
+        "id": host.cf.itil_item_id | int,
+        "entity": host.cf.itil_entity | int ,
+        "asset_type": host.cf.itil_item_type
+      }
+    }
+
+  -%}
+
+{
+  "interfaces": [
+    {% for interface in host.interfaces.all() -%}
+    {
+      "name": "{{ interface.name }}",
+      "label": "
+        {%- if interface.cf.vm_interface_label is defined -%}
+          {{ interface.cf.vm_interface_label }}
+        {%- else -%}
+          {{ interface.label }}
+        {%- endif -%}",
+      "enabled": {{ interface.enabled }},
+      "mac_address": "{{ interface.mac_address }}",
+      {% if interface.status | lower == 'dhcp' -%}{# Should be IP Address #}
+      "type": "dhcp",
+      {%- endif %}
+      "ip": "{{ interface['ip'] }}", 
+      "mask": "{{ interface.mask }}",
+      "bridge": "{{ interface.bridge }}"
+    },
+    {%- endfor %}
+  ],
+
+  "itsm": {{ itsm | replace("'", '"') }},
+  "time_zone": "{{ host.site.time_zone }}",
+  {% block role %}{% endblock %}
+
+}
