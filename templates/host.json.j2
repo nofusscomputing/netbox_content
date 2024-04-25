@@ -72,7 +72,7 @@
 
   {%- endfor -%}
 
-   {%- set _dummy = ns.host.hostConfig.update({"interfaces": ns.interfaces}) -%}
+   {%- set _dummy = ns.host.hostConfig.network.update({"interfaces": ns.interfaces}) -%}
 
 
   {%- block role -%}{%- endblock -%}
