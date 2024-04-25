@@ -5,7 +5,7 @@
 
   {%- if host.role.slug != 'desktop'-%}
 
-    {%- set _dummy = ns.host.update({"time_zone": "UTC" }) -%}
+    {%- set _dummy = ns.host.hostConfig.update({"time_zone": "UTC" }) -%}
 
   {%- endif -%}
 

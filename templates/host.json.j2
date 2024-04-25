@@ -1,6 +1,8 @@
 {%- set ns = namespace({}) -%}
 {%- set ns.host = {} -%}
 
+{%- set _dummy = ns.host.update({"hostConfig": {}}) -%} {#- ToDo: Depreciate hostConfig Key-#}
+
 {%- if device is defined -%}
 
   {%- set host = device -%}
@@ -15,7 +17,7 @@
   Over-Ridable Fields
 -#}
 
-{%- set _dummy = ns.host.update({"time_zone": host.site.time_zone | string }) -%}
+{%- set _dummy = ns.host.hostConfig.update({"time_zone": host.site.time_zone | string }) -%}
 
 
 {#-
@@ -68,7 +70,7 @@
 
   {%- endfor -%}
 
-   {%- set _dummy = ns.host.update({"interfaces": ns.interfaces}) -%}
+   {%- set _dummy = ns.host.hostConfig.update({"interfaces": ns.interfaces}) -%}
 
 
   {%- block role -%}{%- endblock -%}
