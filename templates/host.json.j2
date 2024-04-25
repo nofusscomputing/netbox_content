@@ -45,18 +45,26 @@
 
   {%- for interface in host.interfaces.all() -%}
 
-    {%- set found_interface = {} -%}
+    {%- if
+      interface.type != 'bridge'
+        and
+      interface.type != 'virtual'
+    -%}
 
-      {%- set _dummy = found_interface.update({"name": interface.label}) -%}
-      {%- set _dummy = found_interface.update({"type": "dhcp"}) -%}
+      {%- set found_interface = {} -%}
 
-      {%- if interface.mac_address is defined -%}
+        {%- set _dummy = found_interface.update({"name": interface.label}) -%}
+        {%- set _dummy = found_interface.update({"type": "dhcp"}) -%}
 
-        {%- set _dummy = found_interface.update({"mac_address": interface.mac_address | string}) -%}
+        {%- if interface.mac_address is defined -%}
 
-      {%- endif -%}
+          {%- set _dummy = found_interface.update({"mac_address": interface.mac_address | string}) -%}
 
-    {%- set ns.interfaces = ns.interfaces + [ found_interface ] -%}
+        {%- endif -%}
+
+      {%- set ns.interfaces = ns.interfaces + [ found_interface ] -%}
+
+    {%- endif -%}
 
   {%- endfor -%}
 
