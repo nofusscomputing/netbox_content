@@ -1,3 +1,5 @@
+{%- set ns = namespace({}) -%}
+{%- set ns.host = {} -%}
 
 {%- if device is defined -%}
 
@@ -9,7 +11,20 @@
 
 {%- endif -%}
 
-{%- set itsm = {
+{#-
+  Over-Ridable Fields
+-#}
+
+{%- set _dummy = ns.host.update({"time_zone": host.site.time_zone | string }) -%}
+
+
+{#-
+  ITSM Fields setup
+-#}
+
+{%- set _dummy = ns.host.update({"itsm": {}}) -%}
+
+{%- set _dummy = ns.host.itsm.update({
       "dcim": {
         "id": host.id | int
       },
@@ -18,35 +33,37 @@
         "entity": host.cf.itil_entity | int ,
         "asset_type": host.cf.itil_item_type
       }
-    }
+    }) -%}
 
-  -%}
 
-{
-  "interfaces": [
-    {% for interface in host.interfaces.all() -%}
-    {
-      "name": "{{ interface.name }}",
-      "label": "
-        {%- if interface.cf.vm_interface_label is defined -%}
-          {{ interface.cf.vm_interface_label }}
-        {%- else -%}
-          {{ interface.label }}
-        {%- endif -%}",
-      "enabled": {{ interface.enabled }},
-      "mac_address": "{{ interface.mac_address }}",
-      {% if interface.status | lower == 'dhcp' -%}{# Should be IP Address #}
-      "type": "dhcp",
-      {%- endif %}
-      "ip": "{{ interface['ip'] }}", 
-      "mask": "{{ interface.mask }}",
-      "bridge": "{{ interface.bridge }}"
-    },
-    {%- endfor %}
-  ],
 
-  "itsm": {{ itsm | replace("'", '"') }},
-  "time_zone": "{{ host.site.time_zone }}",
-  {% block role %}{% endblock %}
+{#-
+  Interface Setup
+-#}
 
-}
+{%- set ns.interfaces = [] -%}
+
+  {%- for interface in host.interfaces.all() -%}
+
+    {%- set found_interface = {} -%}
+
+      {%- set _dummy = found_interface.update({"name": interface.label}) -%}
+      {%- set _dummy = found_interface.update({"type": "dhcp"}) -%}
+
+      {%- if interface.mac_address is defined -%}
+
+        {%- set _dummy = found_interface.update({"mac_address": interface.mac_address | string}) -%}
+
+      {%- endif -%}
+
+    {%- set ns.interfaces = ns.interfaces + [ found_interface ] -%}
+
+  {%- endfor -%}
+
+   {%- set _dummy = ns.host.update({"interfaces": ns.interfaces}) -%}
+
+
+  {%- block role -%}{%- endblock -%}
+
+
+  {{ ns.host | replace("'", '"') }}
