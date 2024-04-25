@@ -1,18 +1,21 @@
 
 {%- extends 'templates/role.json.j2' -%}
 
-{%- block cluster %}
+{%- block cluster -%}
 
-
-  {% if host.cluster is defined -%}
+  {%- if host.cluster is defined -%}
 
     {%- if host.cluster.type | lower == 'kubernetes' -%}
-    {#
-      Configuration for Ansible Role nofusscomputing.kubernetes.nfc_kubernetes
-    #}
 
-      {% set kube_ns = namespace(items=[]) -%}
+      {%- set service_ip_octets = ((host.cluster.cf.nfc_role_kubernetes_service_subnet|string).split('/')[0]).split('.') -%}
 
+      {%- set cluster_dns = ns.host.hostConfig.network.dns + [{"ip": (service_ip_octets[0] | string + '.' + service_ip_octets[1] | string  + '.' + service_ip_octets[2] | string  + '.10') | string }] -%}
+
+      {%- set _dummy = ns.host.hostConfig.network.update({"dns": cluster_dns}) -%}
+
+      {#
+        Configuration for Ansible Role nofusscomputing.kubernetes.nfc_kubernetes
+      #}
 
       {%- if
         nfc_role_kubernetes_prime is defined
@@ -20,7 +23,7 @@
         nfc_role_kubernetes_prime is not none
       -%}
 
-        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_prime": nfc_role_kubernetes_prime} ] -%}
+        {%- set _dummy = ns.host.update({"nfc_role_kubernetes_prime": nfc_role_kubernetes_prime}) -%}
 
       {%- endif -%}
 
@@ -31,7 +34,7 @@
         nfc_role_kubernetes_master is not none
       -%}
 
-        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_master": nfc_role_kubernetes_master} ] -%}
+        {%- set _dummy = ns.host.update({"nfc_role_kubernetes_master": nfc_role_kubernetes_master}) -%}
 
       {%- endif -%}
 
@@ -42,29 +45,36 @@
         nfc_role_kubernetes_worker is not none
       -%}
 
-        {%- set kube_ns.items = kube_ns.items + [ {"nfc_role_kubernetes_worker": nfc_role_kubernetes_worker} ] -%}
+        {%- set _dummy = ns.host.update({"nfc_role_kubernetes_worker": nfc_role_kubernetes_worker}) -%}
 
       {%- endif -%}
 
-      {# "nfc_role_kubernetes_cluster_domain": "{{ host.cluster.name | lower }}.kube.", #}
-      {% for val in kube_ns.items %}{% for key, value in val.items() -%}
-      "{{ key }}": {{ value }},
-      {% endfor %}{% endfor %}
 
-      {% for key in host.cluster.cf %}{% if host.cluster.cf[key] != None -%}
-      {% if
-        host.cluster.cf[key] is not integer
-          and
-        host.cluster.cf[key] is not boolean
-      -%}
-      "{{ key }}": "{{ host.cluster.cf[key] }}",
-      {%- else -%}
-      "{{ key }}": {{ host.cluster.cf[key] }},
-      {%- endif %}
-      {% endif %}{% endfor %}
+      {%- for key in host.cluster.cf -%}{#- cf keys require formatting for correct json output -#}
+
+        {%- if host.cluster.cf[key] != none -%}
+
+          {%- if
+            host.cluster.cf[key] is not integer
+              and
+            host.cluster.cf[key] is not boolean
+          -%}
+
+            {%- set _dummy = ns.host.update({key | string: host.cluster.cf[key] | string}) -%}
+
+          {%- else -%}
+
+            {%- set _dummy = ns.host.update({key | string: host.cluster.cf[key]}) -%}
+
+          {%- endif -%}
+
+        {%- endif -%}
+
+      {%- endfor -%}
+
 
     {%- endif -%}
 
-  {%- endif %}
+  {%- endif -%}
 
-{%- endblock %}
+{%- endblock -%}

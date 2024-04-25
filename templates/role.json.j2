@@ -2,5 +2,14 @@
 {%- extends 'templates/host.json.j2' -%}
 
 {%- block role -%}
-  {% block cluster %}{% endblock %}
+
+  {%- if host.role.slug != 'desktop'-%}
+
+    {%- set _dummy = ns.host.hostConfig.update({"time_zone": "UTC" }) -%}
+
+  {%- endif -%}
+
+
+  {%- block cluster %}{% endblock -%}
+
 {%- endblock -%}
