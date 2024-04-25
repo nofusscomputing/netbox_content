@@ -2,6 +2,7 @@
 {%- set ns.host = {} -%}
 
 {%- set _dummy = ns.host.update({"hostConfig": {}}) -%} {#- ToDo: Depreciate hostConfig Key-#}
+{%- set _dummy = ns.host.hostConfig.update({"dns": []}) -%}
 
 {%- if device is defined -%}
 
