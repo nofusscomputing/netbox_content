@@ -54,7 +54,7 @@
 
           {%- for tag in machine.tags.all() -%}
 
-            {%- if tag.name == 'kubernetes-prime-node' -%}
+            {%- if tag.slug == 'kubernetes-prime-node' -%}
 
               {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_prime": machine.name}) -%}
 
@@ -69,7 +69,7 @@
 
           {%- for tag in machine.tags.all() -%}
 
-            {%- if tag.name == 'kubernetes-prime-node' -%}
+            {%- if tag.slug == 'kubernetes-prime-node' -%}
 
               {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_prime": machine.name}) -%}
 
