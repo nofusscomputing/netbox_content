@@ -50,6 +50,40 @@
       {%- endif -%}
 
 
+      {%- for machine in host.cluster.devices.all() -%}    {#- Requires a tag with slug 'kubernetes-prime-node' which denotes the prime node -#}
+
+          {%- for tag in machine.tags.all() -%}
+
+            {%- if tag.name == 'kubernetes-prime-node' -%}
+
+              {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_prime": machine.name}) -%}
+
+            {%- endif -%}
+
+          {%- endfor -%}
+
+      {%- endfor -%}
+
+
+      {%- for machine in host.cluster.virtual_machines.all() -%}    {#- Requires a tag with slug 'kubernetes-prime-node' which denotes the prime node -#}
+
+          {%- for tag in machine.tags.all() -%}
+
+            {%- if tag.name == 'kubernetes-prime-node' -%}
+
+              {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_prime": machine.name}) -%}
+
+            {%- endif -%}
+
+          {%- endfor -%}
+
+      {%- endfor -%}
+
+
+
+
+
+
       {%- for key in host.cluster.cf -%}{#- cf keys require formatting for correct json output -#}
 
         {%- if host.cluster.cf[key] != none -%}
