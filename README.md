@@ -1,7 +1,7 @@
 <div align="center" width="100%">
 
 
-# No Fuss Computing - Docker Bind DNS Server
+# No Fuss Computing - NetBox Content
 
 <br>
 
@@ -13,7 +13,7 @@
 
 
 
-![GitHub forks](https://img.shields.io/github/forks/NofussComputing/docker-nind?logo=github&style=plastic&color=000000&labell=Forks) ![GitHub stars](https://img.shields.io/github/stars/NofussComputing/docker-nind?color=000000&logo=github&style=plastic) ![Github Watchers](https://img.shields.io/github/watchers/NofussComputing/docker-nind?color=000000&label=Watchers&logo=github&style=plastic)
+![GitHub forks](https://img.shields.io/github/forks/NofussComputing/netbox_content?logo=github&style=plastic&color=000000&labell=Forks) ![GitHub stars](https://img.shields.io/github/stars/NofussComputing/netbox_content?color=000000&logo=github&style=plastic) ![Github Watchers](https://img.shields.io/github/watchers/NofussComputing/netbox_content?color=000000&label=Watchers&logo=github&style=plastic)
 <br>
 
 This project is hosted on [gitlab](https://gitlab.com/nofusscomputing/infrastructure/configuration-management/netbox) and has a read-only copy hosted on [Github](https://github.com/NofussComputing/netbox_content).
