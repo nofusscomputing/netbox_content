@@ -50,6 +50,17 @@
       {%- endif -%}
 
 
+      {%- if
+        kubernetes_private_container_registry is defined
+          and
+        kubernetes_private_container_registry is not none
+      -%}
+
+        {%- set _dummy = ns.host.update({"kubernetes_private_container_registry": kubernetes_private_container_registry}) -%}
+
+      {%- endif -%}
+
+
       {%- for machine in host.cluster.devices.all() -%}    {#- Requires a tag with slug 'kubernetes-prime-node' which denotes the prime node -#}
 
           {%- for tag in machine.tags.all() -%}
