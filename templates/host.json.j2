@@ -8,10 +8,16 @@
 {%- if device is defined -%}
 
   {%- set host = device -%}
+  {%- set _dummy = ns.host.update({
+      "is_virtual": false
+    }) -%}
 
 {%- else -%}
 
   {%- set host = virtualmachine -%}
+  {%- set _dummy = ns.host.update({
+      "is_virtual": true
+    }) -%}
 
 {%- endif -%}
 
