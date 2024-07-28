@@ -61,6 +61,29 @@
       {%- endif -%}
 
 
+      {%- if
+        nfc_role_kubernetes_node_taints is defined
+          and
+        nfc_role_kubernetes_node_taints is not none
+      -%}
+
+        {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_taints": nfc_role_kubernetes_node_taints}) -%}
+
+      {%- endif -%}
+
+
+
+      {%- if
+        nfc_role_kubernetes_node_labels is defined
+          and
+        nfc_role_kubernetes_node_labels is not none
+      -%}
+
+        {%- set _dummy = ns.host.update({"nfc_role_kubernetes_node_labels": nfc_role_kubernetes_node_labels}) -%}
+
+      {%- endif -%}
+
+
       {%- for machine in host.cluster.devices.all() -%}    {#- Requires a tag with slug 'kubernetes-prime-node' which denotes the prime node -#}
 
           {%- for tag in machine.tags.all() -%}
